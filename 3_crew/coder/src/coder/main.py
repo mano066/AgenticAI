@@ -11,8 +11,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 # Create output directory if it doesn't exist
 os.makedirs('output', exist_ok=True)
 
-assignment = 'Write a python program to calculate the first 10,000 terms \
-    of this series, multiplying the total by 4: 1 - 1/3 + 1/5 - 1/7 + ...'
+assignment = 'Use Python’s multiprocessing module to parallelize the computation of ln(2) using the alternating harmonic series across 4 CPU cores, splitting the range of terms evenly. Aggregate the result and compare execution time vs. single-threaded. '
 
 def run():
     """

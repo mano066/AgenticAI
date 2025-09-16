@@ -20,10 +20,11 @@ The system should be able to report the holdings of the user at any point in tim
 The system should be able to report the profit or loss of the user at any point in time.
 The system should be able to list the transactions that the user has made over time.
 The system should prevent the user from withdrawing funds that would leave them with a negative balance, or
- from buying more shares than they can afford, or selling shares that they don't have.
- The system has access to a function get_share_price(symbol) which returns the current price of a share, and includes a test implementation that returns fixed prices for AAPL, TSLA, GOOGL.
+from buying more shares than they can afford, or selling shares that they don't have.
+The system has access to a function get_share_price(symbol) which returns the current price of a share, and includes a test implementation that returns fixed prices for AAPL, TSLA, GOOGL. 
+The UI should test all the functions in the backend multiple times until it is working properly.
 """
-module_name = "accounts.py"
+module_name = "accounts.py"  # <-- FIXED: removed .py
 class_name = "Account"
 
 

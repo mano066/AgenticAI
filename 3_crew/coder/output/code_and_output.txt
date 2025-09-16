@@ -1,16 +1,94 @@
-```
-```plaintext
-# Calculate the value of the series 1 - 1/3 + 1/5 - 1/7 + ... for the first 10,000 terms
-def calculate_series(n_terms):
-    total = 0
-    for i in range(n_terms):
-        term = (-1) ** i / (2 * i + 1)  # Calculate each term in the series
-        total += term  # Add or subtract the term based on its position
-    total *= 4  # Multiply the total by 4
+Here's the complete Python code that uses multiprocessing to compute ln(2) using the alternating harmonic series:
+
+```python
+import time
+import multiprocessing as mp
+
+def compute_partial_sum(start, end):
+    """Compute partial sum of alternating harmonic series from start to end (inclusive)"""
+    total = 0.0
+    for i in range(start, end + 1):
+        term = 1.0 / i
+        if i % 2 == 0:  # Even index: subtract
+            total -= term
+        else:  # Odd index: add
+            total += term
     return total
 
-# Calculate the first 10,000 terms
-result = calculate_series(10000)
-print(result)
+def single_threaded_computation(n_terms):
+    """Compute ln(2) using single-threaded approach"""
+    start_time = time.time()
+    result = compute_partial_sum(1, n_terms)
+    end_time = time.time()
+    return result, end_time - start_time
 
-# Output: 3.1414926535900345
+def parallel_computation(n_terms, n_processes=4):
+    """Compute ln(2) using multiprocessing approach"""
+    start_time = time.time()
+    
+    # Split work among processes
+    terms_per_process = n_terms // n_processes
+    remainder = n_terms % n_processes
+    
+    # Create process pool
+    with mp.Pool(processes=n_processes) as pool:
+        tasks = []
+        current_start = 1
+        
+        for i in range(n_processes):
+            # Distribute remainder terms to first few processes
+            current_end = current_start + terms_per_process - 1
+            if i < remainder:
+                current_end += 1
+            
+            tasks.append((current_start, current_end))
+            current_start = current_end + 1
+        
+        # Submit tasks to pool
+        results = pool.starmap(compute_partial_sum, tasks)
+    
+    # Aggregate results
+    final_result = sum(results)
+    end_time = time.time()
+    
+    return final_result, end_time - start_time
+
+# Test with a reasonable number of terms
+n_terms = 1000000
+print(f"Computing ln(2) using {n_terms} terms")
+print("Expected value: {:.10f}".format(0.6931471806))
+print()
+
+# Single-threaded computation
+single_result, single_time = single_threaded_computation(n_terms)
+print(f"Single-threaded result:  {single_result:.10f}")
+print(f"Single-threaded time:  {single_time:.6f} seconds")
+print()
+
+# Parallel computation
+parallel_result, parallel_time = parallel_computation(n_terms)
+print(f"Parallel result:       {parallel_result:.10f}")
+print(f"Parallel time:         {parallel_time:.6f} seconds")
+print()
+
+# Speedup calculation
+speedup = single_time / parallel_time if parallel_time > 0 else 0
+print(f"Speedup: {speedup:.2f}x")
+print(f"Accuracy difference: {abs(single_result - parallel_result):.2e}")
+```
+
+This code implements the solution as requested:
+
+1. **Alternating Harmonic Series**: The series ln(2) = 1 - 1/2 + 1/3 - 1/4 + ... is computed using the `compute_partial_sum` function.
+
+2. **Multiprocessing**: The work is split across 4 CPU cores using Python's multiprocessing module:
+   - The total number of terms is divided among 4 processes
+   - Any remainder terms are distributed to the first few processes
+   - Each process computes its partial sum independently
+   - Results are aggregated to get the final answer
+
+3. **Performance Comparison**: Both single-threaded and multi-threaded approaches are timed and compared.
+
+4. **Output**: Shows both results (which should be very similar) and timing information, including speedup achieved through parallelization.
+
+The expected output would show that while the parallel approach may not achieve perfect 4x speedup due to overhead, it will still demonstrate performance improvement over single-threaded execution, especially with larger numbers of terms. The accuracy difference between approaches should be extremely small (on the order of 10^-15 or smaller).

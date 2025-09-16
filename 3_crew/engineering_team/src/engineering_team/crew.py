@@ -1,8 +1,6 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 
-
-
 @CrewBase
 class EngineeringTeam():
     """EngineeringTeam crew"""
@@ -23,9 +21,9 @@ class EngineeringTeam():
             config=self.agents_config['backend_engineer'],
             verbose=True,
             allow_code_execution=True,
-            code_execution_mode="safe",  # Uses Docker for safety
-            max_execution_time=500, 
-            max_retry_limit=3 
+            code_execution_mode="safe",
+            max_execution_time=500,
+            max_retry_limit=3
         )
     
     @agent
@@ -41,9 +39,20 @@ class EngineeringTeam():
             config=self.agents_config['test_engineer'],
             verbose=True,
             allow_code_execution=True,
-            code_execution_mode="safe",  # Uses Docker for safety
-            max_execution_time=500, 
-            max_retry_limit=3 
+            code_execution_mode="safe",
+            max_execution_time=500,
+            max_retry_limit=3
+        )
+
+    @agent
+    def final_reviewer(self) -> Agent:
+        return Agent(
+            config=self.agents_config['final_reviewer'],
+            verbose=True,
+            allow_code_execution=True,
+            code_execution_mode="safe",
+            max_execution_time=600,
+            max_retry_limit=3
         )
 
     @task
@@ -68,7 +77,14 @@ class EngineeringTeam():
     def test_task(self) -> Task:
         return Task(
             config=self.tasks_config['test_task'],
-        )   
+        )
+
+    @task
+    def final_review_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['final_review_task'],
+        )
+
 
     @crew
     def crew(self) -> Crew:

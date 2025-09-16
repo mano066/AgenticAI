@@ -24,8 +24,9 @@ code_task:
 
 frontend_task:
   description: >
-    Write a gradio UI in a module app.py that demonstrates the given backend class in {module_name}.
-    Assume there is only 1 user, and keep the UI very simple indeed - just a prototype or demo.
+    Write a sophisticated Gradio UI in a module app.py that demonstrates the backend class in {module_name}.
+    The UI should include user login or selection, tabbed navigation for account actions, real-time portfolio stats,
+    error handling, and a clean layout.
     Here are the requirements: {requirements}
   expected_output: >
     A gradio UI in module app.py that demonstrates the given backend class.
@@ -43,8 +44,33 @@ test_task:
   expected_output: >
     A test_{module_name} module that tests the given backend module.
     IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
-    The output should be valid Python code that can be directly saved to a file and executed.
+    The output should be valid and tested Python code that can be directly saved to a file and executed. And it should be working propley with the backend module.
   agent: test_engineer
   context:
     - code_task
   output_file: output/test_{module_name}
+
+final_review_task:
+  description: >
+    Perform a final review of the backend module {module_name}, the test suite test_{module_name}, and the frontend UI app.py.
+    Ensure that:
+      - The backend module correctly implements the requirements
+      - The test suite runs successfully, with adequate coverage
+      - The Gradio UI in app.py correctly interfaces with the backend and offers a clean user experience
+      - All components work together in a single directory with no errors
+      - Edge cases and input validation are properly handled
+    You should run and verify the full stack manually or by inspection. Your output should include a review summary of each component, any issues found, and a final pass/fail decision.
+  expected_output: >
+    A written review summary in markdown format, reviewing:
+      1. Backend module ({module_name})
+      2. Unit test module (test_{module_name})
+      3. Gradio UI (app.py)
+    Each section should include findings and a final decision (PASS/FAIL) with reasoning.
+    IMPORTANT: Output only in markdown format.
+  agent: final_reviewer
+  context:
+    - design_task
+    - code_task
+    - frontend_task
+    - test_task
+  output_file: output/{module_name}_final_review.md

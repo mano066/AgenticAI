@@ -1,0 +1,26 @@
+explore:
+  description: >
+    Explore the topic: {motion}.
+    Uncover interesting insights, unusual angles, or compelling facts to make the topic engaging.
+  expected_output: >
+    A well-written and thoughtful exploration of the topic that reveals something insightful or surprising.
+  agent: explorer
+  output_file: output/explore.md
+
+narrate:
+  description: >
+    Create a short story, parable, or fictional narrative inspired by the topic: {motion}.
+    The story should emotionally engage the reader or provoke deep thought.
+  expected_output: >
+    A creative story or short narrative that relates meaningfully to the topic.
+  agent: storyteller
+  output_file: output/narrate.md
+
+synthesize:
+  description: >
+    Analyze the topic: {motion} by connecting it to broader ideas in art, science, culture, or society.
+    Draw parallels and find deeper meaning.
+  expected_output: >
+    A synthesis of the topic with other domains that reveals hidden connections and enhances understanding.
+  agent: synthesizer
+  output_file: output/synthesize.md

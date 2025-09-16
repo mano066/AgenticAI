@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 from sidekick_tools import playwright_tools, other_tools
 import uuid
 import asyncio
+from langchain_ollama import ChatOllama
 from datetime import datetime
 
 load_dotenv(override=True)
@@ -45,11 +46,11 @@ class Sidekick:
     async def setup(self):
         self.tools, self.browser, self.playwright = await playwright_tools()
         self.tools += await other_tools()
-        worker_llm = ChatOpenAI(model="gpt-4o-mini")
+        worker_llm = ChatOllama(model="llama3.3")
         self.worker_llm_with_tools = worker_llm.bind_tools(self.tools)
-        evaluator_llm = ChatOpenAI(model="gpt-4o-mini")
+        evaluator_llm = ChatOllama(model="llama3.3")
         self.evaluator_llm_with_output = evaluator_llm.with_structured_output(EvaluatorOutput)
-        await self.build_graph()
+        await self.build_graph() 
 
     def worker(self, state: State) -> Dict[str, Any]:
         system_message = f"""You are a helpful assistant that can use tools to complete tasks.
